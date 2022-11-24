@@ -48,6 +48,19 @@ loss_func <- function(beta,y,x){
   return(sum(temp))
 }
 
+
+#' Estimate linear model via optimization
+#' @description This function computes least-squares via convex minimization
+#' @param X A \code{double} value of the vector containing the response of interest.
+#' @param Y An \eqn{n \times p} \code{double} value of the matrix containing the values of the predictors.
+#' @return A \code{list} containing the following objects:
+#' \describe{
+#'  \item{beta_hat}{The estimated coefficients of the linear regression}
+#'  \item{y}{The \code{double} vector containing the response used for the estimation}
+#'  \item{X}{The \eqn{n \times p} \code{double} value of the matrix containing the values of the predictors used for the estimation}
+#' }
+#' @author Roberto Molinari
+#' @export
 Beta.hat <-  function(X,Y,method="BFGS"){
   X=data.frame(X)
   Yi=as.numeric(Y)-1
