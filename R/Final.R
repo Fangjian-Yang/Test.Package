@@ -21,9 +21,9 @@ logistic_plot <- function(X,Y){
   return(plot.list)
 }
 
-
 Beta.init <- function(X,Y){
   X=X.format(X,intercept = T)
+  Y=as.numeric(Y)-1
   Beta <- solve(t(X)%*%X)%*%t(X)%*%Y
   return(Beta)
 }
