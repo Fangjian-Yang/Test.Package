@@ -147,9 +147,5 @@ logistic.regression <- function(X.temp,Y.temp,method="BFGS",cutoff=0.5,alpha=0.1
 }
 
 
-e <- mtcars[,c("hp","mpg")]
-k <- as.factor(mtcars[,"vs"])
-
-
 
 
