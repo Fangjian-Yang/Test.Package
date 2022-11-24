@@ -12,7 +12,7 @@ logistic_plot <- function(X,Y){
   for(i in 1:n)
   {
     temp.data <- data.frame(x=plot[,i],y=as.numeric(plot$response)-1)
-    gp <- ggplot(temp.data, aes(x=x, y=y)) + 
+    gp <- ggplot(temp.data, aes(x=x, y=y)) +
       geom_point(alpha=.5) +
       labs(x=var.list[i],y = "Response")+
       stat_smooth(method="glm", se=FALSE, method.args = list(family=binomial),col="red", lty=2)
@@ -89,7 +89,7 @@ confusion.matrix <- function(pred.value,actual.value,cutoff=0.5){
   TN=nrow(Confusion[Confusion$pred=="0"&Confusion$actual=="0",])
   FP=nrow(Confusion[Confusion$pred=="1"&Confusion$actual=="0",])
   FN=nrow(Confusion[Confusion$pred=="0"&Confusion$actual=="1",])
-  
+
   Accuracy <- (TP+TN)/N
   Prevalence <- (TP+FN)/N
   Sensitivity <- TP/(TP+FN)
@@ -127,7 +127,7 @@ logistic.regression <- function(X.temp,Y.temp,method="BFGS",cutoff=0.5,alpha=0.1
   predict <- logistic_pred(model,X.temp)
   actual.value <- as.numeric(Y.temp)-1
   Analysis <- confusion.matrix(predict,actual.value,cutoff=cutoff)
-  
+
   Yi <- as.numeric(Y.temp)-1
   level=as.character(unique(Y.temp))
   names(level) <- unique(Yi)
@@ -144,5 +144,10 @@ logistic.regression <- function(X.temp,Y.temp,method="BFGS",cutoff=0.5,alpha=0.1
 }
 
 
-
+Test.function <- function(X,Y){
+  a=sum(X)
+  b=sum(Y)
+  c=a+b
+  return(c)
+}
 
