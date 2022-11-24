@@ -57,7 +57,7 @@ Beta.hat <-  function(X,Y,method="BFGS"){
   intercept <- rep(1,nrow(X.temp))
   Xi <- as.matrix(cbind(intercept,X.temp))
   Beta <- solve(t(Xi)%*%Xi)%*%t(Xi)%*%Yi
-  Beta.hat <- optim(Beta,loss_func,X=Yi,X=Xi,method=method)$par
+  Beta.hat <- optim(Beta,loss_func,Y=Yi,X=Xi,method=method)$par
   return(Beta.hat)
 }
 
