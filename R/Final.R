@@ -50,10 +50,11 @@ loss_func <- function(beta,y,x){
 
 
 Beta.hat <-  function(X,Y,method="BFGS"){
-  #X=data.frame(X)
+  X.temp <- X
+  X.temp=data.frame(X.temp)
   Yi=as.numeric(Y)-1
-  intercept <- rep(1,nrow(X))
-  Xi <- as.matrix(cbind(intercept,X))
+  intercept <- rep(1,nrow(X.temp))
+  Xi <- as.matrix(cbind(intercept,X.temp))
   Beta <- solve(t(Xi)%*%Xi)%*%t(Xi)%*%Yi
   Beta.hat <- optim(Beta,loss_func,y=Yi,x=Xi,method=method)$par
   return(Beta.hat)
