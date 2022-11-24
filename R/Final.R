@@ -43,8 +43,8 @@ P.i <- function(beta,x){
   output
 }
 
-loss_func <- function(beta,y,x){
-  p <- P.i(beta,x)
+loss_func <- function(beta,Y,X){
+  p <- P.i(beta,X)
   temp <- -y*log(p)-(1-y)*log(1-p)
   return(sum(temp))
 }
@@ -57,7 +57,7 @@ Beta.hat <-  function(X,Y,method="BFGS"){
   intercept <- rep(1,nrow(X.temp))
   Xi <- as.matrix(cbind(intercept,X.temp))
   Beta <- solve(t(Xi)%*%Xi)%*%t(Xi)%*%Yi
-  Beta.hat <- optim(Beta,loss_func,y=Yi,x=Xi,method=method)$par
+  Beta.hat <- optim(Beta,loss_func,X=Yi,X=Xi,method=method)$par
   return(Beta.hat)
 }
 
