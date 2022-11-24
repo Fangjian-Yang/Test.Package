@@ -34,10 +34,10 @@ Beta.init <- function(X,Y){
 }
 
 P.i <- function(beta,x){
-  X=as.data.frame(X)
-  output <- rep(NA,nrow(x))
-  for(i in 1:nrow(x)){
-    output[i] <- 1/(1+exp(-t(x[i,])%*%beta))
+  X.temp <- as.data.frame(X)
+  output <- rep(NA,nrow(X.temp))
+  for(i in 1:nrow(X.temp)){
+    output[i] <- 1/(1+exp(-t(X.temp[i,])%*%beta))
   }
   output
 }
