@@ -22,9 +22,9 @@ logistic_plot <- function(X,Y){
 }
 
 Beta.init <- function(X,Y){
-  X=X.format(X,intercept = T)
+  Xi=X.format(X,intercept = T)
   Y=as.numeric(Y)-1
-  Beta <- solve(t(X)%*%X)%*%t(X)%*%Y
+  Beta <- solve(t(Xi)%*%Xi)%*%t(Xi)%*%Y
   return(Beta)
 }
 
@@ -67,7 +67,7 @@ boot.confi <- function(X,Y,alpha,B=20){
 }
 
 logistic_pred <- function(model,X){
-  X=X.format(X,intercept = T)
+  Xi=X.format(X,intercept = T)
   predic <- 1/(1+exp(-Xi%*%model))
   return(predic)
 }
