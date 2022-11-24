@@ -1,11 +1,10 @@
 Package: Package.1
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Test the Package "Hello word"
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Fangjian Yang
+Maintainer: The package maintainer <fzy0022@auburn.edu>
+Description: This package does this and that.
+License: AGPL-3
 Encoding: UTF-8
 LazyData: true
