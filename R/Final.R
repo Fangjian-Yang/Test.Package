@@ -22,24 +22,17 @@ logistic_plot <- function(X,Y){
 }
 
 
-
-
 Beta.init <- function(X,Y){
-  X=as.matrix(X)
-  Yi=as.numeric(Y)-1
-  intercept <- rep(1,nrow(X))
-  Xi <- as.matrix(cbind(intercept,X))
-  Beta <- solve(t(Xi)%*%Xi)%*%t(Xi)%*%Yi
+  X=X.format(X,intercept = T)
+  Beta <- solve(t(X)%*%X)%*%t(X)%*%Yi
   return(Beta)
 }
 
-
-P.i <- function(beta,x){
-  X.temp <- x
-  X.temp <- as.matrix(X.temp)
-  output <- rep(NA,nrow(X.temp))
-  for(i in 1:nrow(X.temp)){
-    output[i] <- 1/(1+exp(-t(X.temp[i,])%*%beta))
+P.i <- function(beta,X){
+  X=X.format(X,intercept = F)
+  output <- rep(NA,nrow(X))
+  for(i in 1:nrow(X)){
+    output[i] <- 1/(1+exp(-t(X[i,])%*%beta))
   }
   return(output)
 }
@@ -51,18 +44,17 @@ loss_func <- function(beta,y,x){
 }
 
 Beta.hat <-  function(X,Y,method="BFGS"){
-  X <- as.matrix(X)
-  Yi=as.numeric(Y)-1
-  intercept <- rep(1,nrow(X))
-  Xi <- as.matrix(cbind(intercept,X))
-  Beta <- solve(t(Xi)%*%Xi)%*%t(Xi)%*%Yi
-  Beta.hat <- optim(Beta,loss_func,y=Yi,x=Xi,method=method)$par
+  Beta <- Beta.init(X,Y)
+  Xi=X.format(X,intercept = T)
+  Y=as.numeric(Y)-1
+  Beta.hat <- optim(Beta,loss_func,y=Y,x=Xi,method=method)$par
   return(Beta.hat)
 }
 
 
+
 boot.confi <- function(X,Y,alpha,B=20){
-  X=as.matrix(X)
+  X=X.format(X,intercept = F)
   n=nrow(X)
   boot_mat <- matrix(data = NA,nrow = B,ncol = ncol(X)+1)
   colnames(boot_mat) <- c("intercept",colnames(X))
@@ -75,9 +67,7 @@ boot.confi <- function(X,Y,alpha,B=20){
 }
 
 logistic_pred <- function(model,X){
-  X=as.matrix(X)
-  intercept <- rep(1,nrow(X))
-  Xi <- as.matrix(cbind(intercept,X))
+  X=X.format(X,intercept = T)
   predic <- 1/(1+exp(-Xi%*%model))
   return(predic)
 }
@@ -138,14 +128,24 @@ logistic.regression <- function(X.temp,Y.temp,method="BFGS",cutoff=0.5,alpha=0.1
   rownames(matrix) <- c(paste("Actual.",level["1"],sep=""),paste("Actual.",level["0"],sep=""))
   colnames(matrix) <- c(paste("Predicted.",level["1"],sep=""),paste("Predicted.",level["0"],sep=""))
   
-  beta.info <- data.frame(beta.initial,model,t(CI))
-  colnames(beta.info) <- c("Beta.initial","Beta.hat",paste("CI:",alpha/2,"%",sep=""),paste("CI:",1-alpha/2,"%",sep=""))
+  beta.info <- data.frame(model,beta.initial,t(CI))
+  colnames(beta.info) <- c("Beta.hat","Beta.initial",paste("CI:",alpha/2,"%",sep=""),paste("CI:",1-alpha/2,"%",sep=""))
   plot <- metrics.plot(X.temp,Y.temp)
   result.list <- list("Level"=level,"Beta"=beta.info,"Confusion.Matrix"=matrix,"Metrics"=Analysis$metrics,"Plot"=plot)
   result.list
   return(result.list)
 }
 
+X.format <- function(X,intercept=F)
+{
+    X=as.matrix(X)
+    if(dim(X)[2]==1){colnames(X) <- "Predictor"}
+    if(intercept){
+      intercept <- rep(1,nrow(X))
+      X <- as.matrix(cbind(intercept,X))
+    }
+    return(X)
+}
 
 
 
