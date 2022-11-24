@@ -34,6 +34,7 @@ Beta.init <- function(X,Y){
 }
 
 P.i <- function(beta,x){
+  X.temp <- X
   X.temp <- as.data.frame(X)
   output <- rep(NA,nrow(X.temp))
   for(i in 1:nrow(X.temp)){
