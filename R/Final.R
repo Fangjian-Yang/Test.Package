@@ -51,7 +51,7 @@ loss_func <- function(beta,y,x){
 
 Beta.hat <-  function(X,Y,method="BFGS"){
   X.temp <- X
-  #X.temp=data.frame(X.temp)
+  X.temp=as.data.frame(X.temp)
   Yi=as.numeric(Y)-1
   intercept <- rep(1,nrow(X.temp))
   Xi <- as.matrix(cbind(intercept,X.temp))
