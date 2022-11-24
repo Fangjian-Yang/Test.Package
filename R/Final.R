@@ -12,7 +12,7 @@ logistic_plot <- function(X,Y){
   for(i in 1:n)
   {
     temp.data <- data.frame(x=plot[,i],y=as.numeric(plot$response)-1)
-    gp <- ggplot(temp.data, aes(x=x, y=y)) +
+    gp <- ggplot(temp.data, aes(x=x, y=y)) + 
       geom_point(alpha=.5) +
       labs(x=var.list[i],y = "Response")+
       stat_smooth(method="glm", se=FALSE, method.args = list(family=binomial),col="red", lty=2)
@@ -25,7 +25,7 @@ logistic_plot <- function(X,Y){
 
 
 Beta.init <- function(X,Y){
-  X=data.frame(X)
+  X=as.matrix(X)
   Yi=as.numeric(Y)-1
   intercept <- rep(1,nrow(X))
   Xi <- as.matrix(cbind(intercept,X))
@@ -33,36 +33,36 @@ Beta.init <- function(X,Y){
   return(Beta)
 }
 
+
 P.i <- function(beta,x){
-  X.temp <- X
-  X.temp <- as.data.frame(X)
+  X.temp <- x
+  X.temp <- as.matrix(X.temp)
   output <- rep(NA,nrow(X.temp))
   for(i in 1:nrow(X.temp)){
     output[i] <- 1/(1+exp(-t(X.temp[i,])%*%beta))
   }
-  output
+  return(output)
 }
 
-loss_func <- function(beta,Y,X){
-  p <- P.i(beta,X)
+loss_func <- function(beta,y,x){
+  p <- P.i(beta,x)
   temp <- -y*log(p)-(1-y)*log(1-p)
   return(sum(temp))
 }
 
-
 Beta.hat <-  function(X,Y,method="BFGS"){
-  X.temp <- X
-  X.temp=as.data.frame(X.temp)
+  X <- as.matrix(X)
   Yi=as.numeric(Y)-1
-  intercept <- rep(1,nrow(X.temp))
-  Xi <- as.matrix(cbind(intercept,X.temp))
+  intercept <- rep(1,nrow(X))
+  Xi <- as.matrix(cbind(intercept,X))
   Beta <- solve(t(Xi)%*%Xi)%*%t(Xi)%*%Yi
-  Beta.hat <- optim(Beta,loss_func,Y=Yi,X=Xi,method=method)$par
+  Beta.hat <- optim(Beta,loss_func,y=Yi,x=Xi,method=method)$par
   return(Beta.hat)
 }
 
+
 boot.confi <- function(X,Y,alpha,B=20){
-  X=data.frame(X)
+  X=as.matrix(X)
   n=nrow(X)
   boot_mat <- matrix(data = NA,nrow = B,ncol = ncol(X)+1)
   colnames(boot_mat) <- c("intercept",colnames(X))
@@ -75,7 +75,7 @@ boot.confi <- function(X,Y,alpha,B=20){
 }
 
 logistic_pred <- function(model,X){
-  X=data.frame(X)
+  X=as.matrix(X)
   intercept <- rep(1,nrow(X))
   Xi <- as.matrix(cbind(intercept,X))
   predic <- 1/(1+exp(-Xi%*%model))
@@ -92,7 +92,7 @@ confusion.matrix <- function(pred.value,actual.value,cutoff=0.5){
   TN=nrow(Confusion[Confusion$pred=="0"&Confusion$actual=="0",])
   FP=nrow(Confusion[Confusion$pred=="1"&Confusion$actual=="0",])
   FN=nrow(Confusion[Confusion$pred=="0"&Confusion$actual=="1",])
-
+  
   Accuracy <- (TP+TN)/N
   Prevalence <- (TP+FN)/N
   Sensitivity <- TP/(TP+FN)
@@ -130,14 +130,14 @@ logistic.regression <- function(X.temp,Y.temp,method="BFGS",cutoff=0.5,alpha=0.1
   predict <- logistic_pred(model,X.temp)
   actual.value <- as.numeric(Y.temp)-1
   Analysis <- confusion.matrix(predict,actual.value,cutoff=cutoff)
-
+  
   Yi <- as.numeric(Y.temp)-1
   level=as.character(unique(Y.temp))
   names(level) <- unique(Yi)
   matrix <- matrix(Analysis$matrix,nrow=2,ncol=2)
   rownames(matrix) <- c(paste("Actual.",level["1"],sep=""),paste("Actual.",level["0"],sep=""))
   colnames(matrix) <- c(paste("Predicted.",level["1"],sep=""),paste("Predicted.",level["0"],sep=""))
-
+  
   beta.info <- data.frame(beta.initial,model,t(CI))
   colnames(beta.info) <- c("Beta.initial","Beta.hat",paste("CI:",alpha/2,"%",sep=""),paste("CI:",1-alpha/2,"%",sep=""))
   plot <- metrics.plot(X.temp,Y.temp)
@@ -147,10 +147,9 @@ logistic.regression <- function(X.temp,Y.temp,method="BFGS",cutoff=0.5,alpha=0.1
 }
 
 
-Test.function <- function(X,Y){
-  a=sum(X)
-  b=sum(Y)
-  c=a+b
-  return(c)
-}
+e <- mtcars[,c("hp","mpg")]
+k <- as.factor(mtcars[,"vs"])
+
+
+
 
